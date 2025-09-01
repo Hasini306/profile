@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Registration / Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;   /* Light background */
+      min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      width: 380px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: 0.3s;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #2d3748;
+    }
+    input {
+      width: 100%; padding: 12px; margin: 8px 0;
+      border: 1px solid #ccc; border-radius: 6px;
+      font-size: 14px;
+      background: #f9f9f9;
+      transition: 0.3s;
+    }
+    input:focus {
+      border-color: #4a90e2;
+      outline: none;
+      background: #fff;
+      box-shadow: 0 0 6px rgba(74,144,226,0.4);
+    }
+    button {
+      width: 100%; padding: 12px;
+      background: #4a90e2;
+      border: none; border-radius: 6px;
+      color: white; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: 0.3s;
+      margin-top: 10px;
+    }
+    button:hover { background: #357ABD; }
+    .link {
+      margin-top: 15px; font-size: 14px;
+      color: #444;
+    }
+    .link a { color: #4a90e2; font-weight: 600; cursor: pointer; }
+    .profile {
+      display: none;
+      text-align: center;
+    }
+    .profile h2 { margin-bottom: 10px; color: #2d3748; }
+    .profile p { margin: 5px 0; color: #555; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Registration Form -->
+    <div id="registerBox">
+      <h2>Create Account</h2>
+      <input type="text" id="regName" placeholder="Full Name" required>
+      <input type="email" id="regEmail" placeholder="Email" required>
+      <input type="text" id="regUsername" placeholder="Username" required>
+      <input type="password" id="regPassword" placeholder="Password" required>
+      <input type="password" id="regConfirm" placeholder="Confirm Password" required>
+      <button onclick="register()">Register</button>
+      <div class="link">Already have an account? <a onclick="showLogin()">Login</a></div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginBox" class="hidden">
+      <h2>Welcome Back</h2>
+      <input type="text" id="loginUsername" placeholder="Username" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button onclick="login()">Login</button>
+      <div class="link">No account? <a onclick="showRegister()">Register</a></div>
+    </div>
+
+    <!-- Profile -->
+    <div id="profileBox" class="profile">
+      <h2 id="profileName">User Name</h2>
+      <p id="profileUsername">@username</p>
+      <p id="profileEmail">Email: user@example.com</p>
+      <p id="profileDate"></p>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    function showLogin(){
+      document.getElementById("registerBox").classList.add("hidden");
+      document.getElementById("loginBox").classList.remove("hidden");
+      document.getElementById("profileBox").style.display = "none";
+    }
+    function showRegister(){
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("registerBox").classList.remove("hidden");
+      document.getElementById("profileBox").style.display = "none";
+    }
+
+    // Register user
+    function register(){
+      let name = document.getElementById("regName").value.trim();
+      let email = document.getElementById("regEmail").value.trim();
+      let username = document.getElementById("regUsername").value.trim();
+      let password = document.getElementById("regPassword").value;
+      let confirm = document.getElementById("regConfirm").value;
+
+      if(password !== confirm){
+        alert("Passwords do not match!");
+        return;
+      }
+      if(!name || !email || !username || !password){
+        alert("All fields are required!");
+        return;
+      }
+
+      localStorage.setItem("name", name);
+      localStorage.setItem("email", email);
+      localStorage.setItem("username", username);
+      localStorage.setItem("password", password);
+      localStorage.setItem("joinDate", new Date().toLocaleDateString());
+
+      alert("Registration successful! Please login.");
+      showLogin();
+    }
+
+    // Login user
+    function login(){
+      let username = document.getElementById("loginUsername").value.trim();
+      let password = document.getElementById("loginPassword").value;
+
+      let storedUsername = localStorage.getItem("username");
+      let storedPassword = localStorage.getItem("password");
+
+      if(username === storedUsername && password === storedPassword){
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("registerBox").classList.add("hidden");
+        document.getElementById("profileBox").style.display = "block";
+
+        document.getElementById("profileName").innerText = localStorage.getItem("name");
+        document.getElementById("profileUsername").innerText = "@" + localStorage.getItem("username");
+        document.getElementById("profileEmail").innerText = "Email: " + localStorage.getItem("email");
+        document.getElementById("profileDate").innerText = "Joined: " + localStorage.getItem("joinDate");
+      } else {
+        alert("Invalid username or password!");
+      }
+    }
+
+    // Logout
+    function logout(){
+      document.getElementById("profileBox").style.display = "none";
+      document.getElementById("loginBox").classList.remove("hidden");
+      document.getElementById("loginUsername").value = "";
+      document.getElementById("loginPassword").value = "";
+    }
+  </script>
+</body>
+</html>
